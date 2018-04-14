@@ -19,9 +19,10 @@ where business_id in (select business_id
 -- restaurants reviews - Las Vegas
 -- filename=reviews_vegas.html
 select * from  review 
-where business_id in (select business_id 
-									from category , business
-									where category.category in ('Restaurants')  and business.city in ('Las Vegas')) limit 1
+where business_id in (select category.business_id 
+									from category 
+                                    inner join business on category.business_id=business.id
+									where category.category in ('Restaurants')  and business.city in ('Las Vegas')) 
 
 
 -- city-wise restaurants counts
