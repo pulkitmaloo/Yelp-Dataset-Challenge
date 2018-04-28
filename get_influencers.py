@@ -1,9 +1,6 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, DBSCAN
 from sklearn.decomposition import PCA
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 def cluster(data, method, **args):
@@ -25,16 +22,19 @@ def cluster(data, method, **args):
 
     ## PCA
     pca = PCA(n_components = 2)
-    x_red = pca.fit_transform(x)
+    x_pca = pca.fit_transform(x)
+    
     print("METHOD :", method)
     if method == "kmeans":
-        kmeans = KMeans(n_clusters=2, random_state=1).fit(x)
+        kmeans = KMeans(n_clusters=2, random_state=1)
+        kmeans.fit(x)
         pred = kmeans.predict(x)
         outlier_cluster = np.argmin([list(pred).count(i) for i in set(pred)])
         outliers = np.where(pred == outlier_cluster)[0]
         
     if method == "dbscan":
-        dbscan = DBSCAN(eps = args['eps'], min_samples = args['min_samples'], metric = args['metric']).fit(x)
+        dbscan = DBSCAN(eps = args['eps'], min_samples = args['min_samples'], metric = args['metric'])
+        dbscan.fit(x)
         pred = dbscan.fit_predict(x)
         outliers = np.where(pred == -1)[0]
         outlier_cluster = -1
@@ -46,7 +46,7 @@ def cluster(data, method, **args):
     
     ## Plotting
     color = ['r' if c == outlier_cluster else 'b' for c in pred]
-    plt.scatter(x = x_red[:,0], y = x_red[:,1], c= color)
+    plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= color)
     return outlier_ids
 
 
